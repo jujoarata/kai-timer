@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>界タビ20s 予約開始日計算機</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            padding: 30px;
+            background: #f4f4f4;
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 1.2rem;
+        }
+
+        input {
+            width: 80%;
+            padding: 12px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .result-box {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #feb2b2;
+            margin-top: 10px;
+        }
+
+        .label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .date-output {
+            display: block;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #e53e3e;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h2>界タビ20s 予約開始日計算機</h2>
+        <p class="label">チェックイン日を入力してください</p>
+        <input type="date" id="checkinDate" onchange="calc()">
+
+        <div id="resultArea" style="display:none;">
+            <div class="result-box">
+                <span class="label">予約開始（44日前）は…</span>
+                <span id="resDay" class="date-output"></span>
+                <p style="font-size:0.8rem; color:#c53030; margin-top:10px;">
+                    ※この日の<b>午前0:00（深夜24時）</b>に開始です！<br>
+                    前日の夜から待機しましょう。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calc() {
+            const dateVal = document.getElementById('checkinDate').value;
+            if (!dateVal) return;
+
+            const checkin = new Date(dateVal);
+            const resDate = new Date(checkin);
+            resDate.setDate(checkin.getDate() - 44);
+
+            const y = resDate.getFullYear();
+            const m = resDate.getMonth() + 1;
+            const d = resDate.getDate();
+            const week = ['日', '月', '火', '水', '木', '金', '土'][resDate.getDay()];
+
+            document.getElementById('resDay').innerText = `${y}年${m}月${d}日 (${week})`;
+            document.getElementById('resultArea').style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
