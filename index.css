@@ -287,8 +287,14 @@ h1 {
         padding: 12px;
     }
 
+    .container {
+        max-width: 100%;
+        overflow: hidden;
+    }
+
     .card {
-        padding: 24px 16px;
+        padding: 24px 12px;
+        overflow: hidden;
     }
 
     h1 {
@@ -296,24 +302,48 @@ h1 {
     }
 
     .calendar {
-        padding: 12px 8px;
+        padding: 10px 6px;
+        overflow: hidden;
+    }
+
+    .calendar-header {
+        gap: 2px;
     }
 
     .calendar-grid {
         gap: 2px;
+        min-height: auto;
     }
 
-    .result-date {
-        font-size: 1.5rem;
+    .weekday {
+        font-size: 0.7rem;
+        padding: 6px 0;
     }
 
     .day {
-        font-size: 0.8rem;
+        aspect-ratio: unset;
+        height: 36px;
+        font-size: 0.75rem;
         border-radius: 8px;
+    }
+
+    .result-date {
+        font-size: 1.4rem;
     }
 
     .nav-btn {
         width: 36px;
         height: 36px;
+        font-size: 0.9rem;
+    }
+
+    .month-label {
+        font-size: 1rem;
+        min-width: 100px;
+    }
+
+    .today-btn {
+        font-size: 0.7rem;
+        padding: 5px 12px;
     }
 }
