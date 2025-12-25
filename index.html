@@ -18,9 +18,14 @@
             <h1>界タビ20s</h1>
             <p class="subtitle">予約開始日計算機</p>
 
-            <div class="input-group">
-                <label class="input-label">📅 チェックイン希望日</label>
-                <input type="date" id="checkinDate" onchange="calc()">
+            <div class="calendar-container">
+                <div class="calendar-nav">
+                    <button class="nav-btn" onclick="prevMonth()">◀</button>
+                    <span id="monthLabel" class="month-label"></span>
+                    <button class="nav-btn" onclick="nextMonth()">▶</button>
+                </div>
+                <button class="today-btn" onclick="goToToday()">今月に戻る</button>
+                <div id="calendar" class="calendar"></div>
             </div>
 
             <div class="result-card" id="resultCard">
