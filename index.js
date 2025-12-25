@@ -160,6 +160,13 @@ function renderCalendar() {
         }
     }
 
+    // 常に6行（42セル）になるように空セルを追加
+    const totalCells = firstDay + daysInMonth;
+    const remainingCells = 42 - totalCells;
+    for (let i = 0; i < remainingCells; i++) {
+        html += '<div class="day empty"></div>';
+    }
+
     html += '</div>';
     calendar.innerHTML = html;
 }
