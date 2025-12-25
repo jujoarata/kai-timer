@@ -1,72 +1,91 @@
-// 日本の祝日（2024-2026年）
-const holidays = {
-    // 2024年
-    '2024-01-01': '元日',
-    '2024-01-08': '成人の日',
-    '2024-02-11': '建国記念の日',
-    '2024-02-12': '振替休日',
-    '2024-02-23': '天皇誕生日',
-    '2024-03-20': '春分の日',
-    '2024-04-29': '昭和の日',
-    '2024-05-03': '憲法記念日',
-    '2024-05-04': 'みどりの日',
-    '2024-05-05': 'こどもの日',
-    '2024-05-06': '振替休日',
-    '2024-07-15': '海の日',
-    '2024-08-11': '山の日',
-    '2024-08-12': '振替休日',
-    '2024-09-16': '敬老の日',
-    '2024-09-22': '秋分の日',
-    '2024-09-23': '振替休日',
-    '2024-10-14': 'スポーツの日',
-    '2024-11-03': '文化の日',
-    '2024-11-04': '振替休日',
-    '2024-11-23': '勤労感謝の日',
-    // 2025年
-    '2025-01-01': '元日',
-    '2025-01-13': '成人の日',
-    '2025-02-11': '建国記念の日',
-    '2025-02-23': '天皇誕生日',
-    '2025-02-24': '振替休日',
-    '2025-03-20': '春分の日',
-    '2025-04-29': '昭和の日',
-    '2025-05-03': '憲法記念日',
-    '2025-05-04': 'みどりの日',
-    '2025-05-05': 'こどもの日',
-    '2025-05-06': '振替休日',
-    '2025-07-21': '海の日',
-    '2025-08-11': '山の日',
-    '2025-09-15': '敬老の日',
-    '2025-09-23': '秋分の日',
-    '2025-10-13': 'スポーツの日',
-    '2025-11-03': '文化の日',
-    '2025-11-23': '勤労感謝の日',
-    '2025-11-24': '振替休日',
-    // 2026年
-    '2026-01-01': '元日',
-    '2026-01-12': '成人の日',
-    '2026-02-11': '建国記念の日',
-    '2026-02-23': '天皇誕生日',
-    '2026-03-20': '春分の日',
-    '2026-04-29': '昭和の日',
-    '2026-05-03': '憲法記念日',
-    '2026-05-04': 'みどりの日',
-    '2026-05-05': 'こどもの日',
-    '2026-05-06': '振替休日',
-    '2026-07-20': '海の日',
-    '2026-08-11': '山の日',
-    '2026-09-21': '敬老の日',
-    '2026-09-22': '国民の休日',
-    '2026-09-23': '秋分の日',
-    '2026-10-12': 'スポーツの日',
-    '2026-11-03': '文化の日',
-    '2026-11-23': '勤労感謝の日',
-};
+// 日本の祝日を動的に計算
+function getJapaneseHolidays(year) {
+    const holidays = {};
+
+    // 固定祝日
+    holidays[`${year}-01-01`] = '元日';
+    holidays[`${year}-02-11`] = '建国記念の日';
+    holidays[`${year}-02-23`] = '天皇誕生日';
+    holidays[`${year}-04-29`] = '昭和の日';
+    holidays[`${year}-05-03`] = '憲法記念日';
+    holidays[`${year}-05-04`] = 'みどりの日';
+    holidays[`${year}-05-05`] = 'こどもの日';
+    holidays[`${year}-08-11`] = '山の日';
+    holidays[`${year}-11-03`] = '文化の日';
+    holidays[`${year}-11-23`] = '勤労感謝の日';
+
+    // ハッピーマンデー（第N月曜日）
+    holidays[getNthWeekday(year, 1, 1, 2)] = '成人の日'; // 1月第2月曜
+    holidays[getNthWeekday(year, 7, 1, 3)] = '海の日'; // 7月第3月曜
+    holidays[getNthWeekday(year, 9, 1, 3)] = '敬老の日'; // 9月第3月曜
+    holidays[getNthWeekday(year, 10, 1, 2)] = 'スポーツの日'; // 10月第2月曜
+
+    // 春分の日（3月20日または21日）
+    const shunbun = getShunbunDate(year);
+    holidays[`${year}-03-${String(shunbun).padStart(2, '0')}`] = '春分の日';
+
+    // 秋分の日（9月22日または23日）
+    const shubun = getShubunDate(year);
+    holidays[`${year}-09-${String(shubun).padStart(2, '0')}`] = '秋分の日';
+
+    // 振替休日の計算（祝日が日曜の場合、翌平日が振替休日）
+    const holidayDates = Object.keys(holidays).sort();
+    holidayDates.forEach(dateStr => {
+        const date = new Date(dateStr);
+        if (date.getDay() === 0) { // 日曜日
+            let nextDay = new Date(date);
+            nextDay.setDate(nextDay.getDate() + 1);
+            let nextDayStr = formatDate(nextDay);
+            while (holidays[nextDayStr]) {
+                nextDay.setDate(nextDay.getDate() + 1);
+                nextDayStr = formatDate(nextDay);
+            }
+            holidays[nextDayStr] = '振替休日';
+        }
+    });
+
+    // 国民の休日（祝日と祝日に挟まれた平日）
+    const allDates = Object.keys(holidays).sort();
+    for (let i = 0; i < allDates.length - 1; i++) {
+        const current = new Date(allDates[i]);
+        const next = new Date(allDates[i + 1]);
+        const diff = (next - current) / (1000 * 60 * 60 * 24);
+        if (diff === 2) {
+            const between = new Date(current);
+            between.setDate(between.getDate() + 1);
+            const betweenStr = formatDate(between);
+            if (!holidays[betweenStr] && between.getDay() !== 0) {
+                holidays[betweenStr] = '国民の休日';
+            }
+        }
+    }
+
+    return holidays;
+}
+
+// 第N週のM曜日を取得
+function getNthWeekday(year, month, weekday, n) {
+    const firstDay = new Date(year, month - 1, 1);
+    let day = 1 + (weekday - firstDay.getDay() + 7) % 7;
+    day += (n - 1) * 7;
+    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
+
+// 春分の日の計算
+function getShunbunDate(year) {
+    return Math.floor(20.8431 + 0.242194 * (year - 1980) - Math.floor((year - 1980) / 4));
+}
+
+// 秋分の日の計算
+function getShubunDate(year) {
+    return Math.floor(23.2488 + 0.242194 * (year - 1980) - Math.floor((year - 1980) / 4));
+}
 
 // カレンダーの状態
 let currentYear;
 let currentMonth;
 let selectedDate = null;
+let holidayCache = {};
 
 // 初期化
 document.addEventListener('DOMContentLoaded', function () {
@@ -76,12 +95,22 @@ document.addEventListener('DOMContentLoaded', function () {
     renderCalendar();
 });
 
+// 祝日キャッシュ取得
+function getHolidaysForYear(year) {
+    if (!holidayCache[year]) {
+        holidayCache[year] = getJapaneseHolidays(year);
+    }
+    return holidayCache[year];
+}
+
 // カレンダー描画
 function renderCalendar() {
     const calendar = document.getElementById('calendar');
     const monthLabel = document.getElementById('monthLabel');
 
     monthLabel.textContent = `${currentYear}年${currentMonth + 1}月`;
+
+    const holidays = getHolidaysForYear(currentYear);
 
     // カレンダーのヘッダー（曜日）
     const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
@@ -113,17 +142,16 @@ function renderCalendar() {
         const isPast = date < today;
         const isSelected = selectedDate === dateStr;
         const dayOfWeek = date.getDay();
-        const isHoliday = holidays[dateStr];
+        const holidayName = holidays[dateStr];
 
         let classes = 'day';
         if (isToday) classes += ' today';
         if (isPast) classes += ' past';
         if (isSelected) classes += ' selected';
-        if (dayOfWeek === 0 || isHoliday) classes += ' sunday';
-        if (dayOfWeek === 6 && !isHoliday) classes += ' saturday';
-        if (isHoliday) classes += ' holiday';
+        if (dayOfWeek === 0 || holidayName) classes += ' holiday';
+        else if (dayOfWeek === 6) classes += ' saturday';
 
-        const title = isHoliday ? `title="${isHoliday}"` : '';
+        const title = holidayName ? `title="${holidayName}"` : '';
 
         if (isPast) {
             html += `<div class="${classes}" ${title}>${day}</div>`;

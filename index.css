@@ -199,6 +199,19 @@ h1 {
     color: #fff;
 }
 
+/* 祝日スタイル */
+.day.holiday:not(.past) {
+    color: #ff6b6b;
+}
+
+.day.holiday.past {
+    color: rgba(255, 107, 107, 0.35);
+}
+
+.day.selected.holiday {
+    color: #fff;
+}
+
 /* 結果カード */
 .result-card {
     background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
