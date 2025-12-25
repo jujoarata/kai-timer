@@ -283,12 +283,24 @@ h1 {
 }
 
 @media (max-width: 480px) {
+    body {
+        padding: 12px;
+    }
+
     .card {
-        padding: 30px 20px;
+        padding: 24px 16px;
     }
 
     h1 {
         font-size: 1.3rem;
+    }
+
+    .calendar {
+        padding: 12px 8px;
+    }
+
+    .calendar-grid {
+        gap: 2px;
     }
 
     .result-date {
@@ -297,6 +309,11 @@ h1 {
 
     .day {
         font-size: 0.8rem;
-        border-radius: 10px;
+        border-radius: 8px;
+    }
+
+    .nav-btn {
+        width: 36px;
+        height: 36px;
     }
 }
