@@ -5,76 +5,220 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>界タビ20s 予約開始日計算機</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: -apple-system, sans-serif;
-            padding: 30px;
-            background: #f4f4f4;
-            text-align: center;
+            font-family: 'Noto Sans JP', -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
         }
 
         .card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            margin: auto;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px 30px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        h2 {
-            color: #333;
-            font-size: 1.2rem;
+        .logo {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 8px;
         }
 
-        input {
-            width: 80%;
-            padding: 12px;
-            margin: 20px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
+        h1 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
 
-        .result-box {
-            background: #fff5f5;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #feb2b2;
-            margin-top: 10px;
-        }
-
-        .label {
+        .subtitle {
+            color: rgba(255, 255, 255, 0.6);
             font-size: 0.9rem;
-            color: #666;
+            text-align: center;
+            margin-bottom: 32px;
         }
 
-        .date-output {
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-label {
             display: block;
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #e53e3e;
-            margin-top: 5px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            font-size: 1.1rem;
+            color: #fff;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        input[type="date"]:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #e94560;
+            box-shadow: 0 0 0 4px rgba(233, 69, 96, 0.2);
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #e94560 0%, #ff6b6b 100%);
+            border-radius: 18px;
+            padding: 28px;
+            text-align: center;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .result-card.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .result-label {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .result-date {
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .result-note {
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            padding: 14px 18px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+
+        .result-note strong {
+            color: #fff;
+        }
+
+        .countdown {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .countdown-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+        }
+
+        .countdown-value {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 30px 24px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            .result-date {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="card">
-        <h2>界タビ20s 予約開始日計算機</h2>
-        <p class="label">チェックイン日を入力してください</p>
-        <input type="date" id="checkinDate" onchange="calc()">
+    <div class="container">
+        <div class="card">
+            <div class="logo">🏨</div>
+            <h1>界タビ20s</h1>
+            <p class="subtitle">予約開始日計算機</p>
 
-        <div id="resultArea" style="display:none;">
-            <div class="result-box">
-                <span class="label">予約開始（44日前）は…</span>
-                <span id="resDay" class="date-output"></span>
-                <p style="font-size:0.8rem; color:#c53030; margin-top:10px;">
-                    ※この日の<b>午前0:00（深夜24時）</b>に開始です！<br>
-                    前日の夜から待機しましょう。
-                </p>
+            <div class="input-group">
+                <label class="input-label">📅 チェックイン希望日</label>
+                <input type="date" id="checkinDate" onchange="calc()">
+            </div>
+
+            <div class="result-card" id="resultCard">
+                <p class="result-label">🎯 予約開始日（44日前）</p>
+                <p class="result-date" id="resDay"></p>
+                <div class="result-note">
+                    ⚠️ <strong>午前0:00（深夜24時）</strong>に開始！<br>
+                    前日の夜から待機がおすすめです
+                </div>
+                <div class="countdown" id="countdownArea" style="display: none;">
+                    <p class="countdown-label">予約開始まで</p>
+                    <p class="countdown-value" id="countdownValue"></p>
+                </div>
             </div>
         </div>
+
+        <p class="footer">Made with ❤️ for 界タビ20s</p>
     </div>
 
     <script>
@@ -92,8 +236,35 @@
             const week = ['日', '月', '火', '水', '木', '金', '土'][resDate.getDay()];
 
             document.getElementById('resDay').innerText = `${y}年${m}月${d}日 (${week})`;
-            document.getElementById('resultArea').style.display = 'block';
+            document.getElementById('resultCard').classList.add('show');
+
+            // カウントダウン計算
+            const now = new Date();
+            const resStart = new Date(resDate);
+            resStart.setHours(0, 0, 0, 0);
+
+            const diff = resStart - now;
+            const countdownArea = document.getElementById('countdownArea');
+            const countdownValue = document.getElementById('countdownValue');
+
+            if (diff > 0) {
+                countdownArea.style.display = 'block';
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                countdownValue.innerText = `あと ${days}日 ${hours}時間`;
+            } else if (diff > -24 * 60 * 60 * 1000) {
+                countdownArea.style.display = 'block';
+                countdownValue.innerText = '🔥 今日から予約開始！';
+            } else {
+                countdownArea.style.display = 'block';
+                countdownValue.innerText = '予約受付中';
+            }
         }
+
+        // 今日の日付をデフォルトに設定
+        const today = new Date();
+        today.setDate(today.getDate() + 45); // 45日後をデフォルトに
+        document.getElementById('checkinDate').min = new Date().toISOString().split('T')[0];
     </script>
 </body>
 
