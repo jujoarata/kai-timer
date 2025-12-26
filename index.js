@@ -225,7 +225,9 @@ function calc(dateStr) {
     const week = ['日', '月', '火', '水', '木', '金', '土'][resDate.getDay()];
 
     document.getElementById('resDay').innerText = `${y}年${m}月${d}日 (${week})`;
-    document.getElementById('resultCard').classList.add('show');
+
+    const resultCard = document.getElementById('resultCard');
+    resultCard.classList.add('show');
 
     // カウントダウン計算
     const now = new Date();
@@ -236,15 +238,19 @@ function calc(dateStr) {
     const countdownArea = document.getElementById('countdownArea');
     const countdownValue = document.getElementById('countdownValue');
 
+    // 予約開始前は赤、開始済みは青
     if (diff > 0) {
+        resultCard.classList.remove('started');
         countdownArea.style.display = 'block';
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         countdownValue.innerText = `あと ${days}日 ${hours}時間`;
     } else if (diff > -24 * 60 * 60 * 1000) {
+        resultCard.classList.add('started');
         countdownArea.style.display = 'block';
         countdownValue.innerText = '🔥 今日から予約開始！';
     } else {
+        resultCard.classList.add('started');
         countdownArea.style.display = 'block';
         countdownValue.innerText = '予約受付中';
     }

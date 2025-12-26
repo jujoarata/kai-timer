@@ -230,6 +230,11 @@ h1 {
     opacity: 1;
 }
 
+/* 予約開始済み（青系） */
+.result-card.started {
+    background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+}
+
 .result-label {
     color: rgba(255, 255, 255, 0.85);
     font-size: 0.9rem;
